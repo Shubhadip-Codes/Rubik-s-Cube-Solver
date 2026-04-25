@@ -1,7 +1,7 @@
 #ifndef MOVES_H
 #define MOVES_H
 
-#include "cube.h"
+#include "cube/cube.h"
 #include<bits/stdc++.h>
 using namespace std;
 

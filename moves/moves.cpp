@@ -18,9 +18,8 @@ Perm cycle(vector<int>v){
 
 Perm moveU(){
     Perm p;
-    auto c1 = cycle({0,2,8,6});//corners
-    auto c2 = cycle({1,5,7,3});//edges
-    //strips
+    auto c1 = cycle({0, 2, 8, 6});
+    auto c2 = cycle({1, 5, 7, 3});
     auto c3 = cycle({18,36,45,9});
     auto c4 = cycle({19,37,46,10});
     auto c5 = cycle({20,38,47,11});
@@ -36,12 +35,11 @@ Perm moveU(){
 
 Perm moveR(){
     Perm p;
-    auto c1 = cycle({9,11,17,15});//corners
-    auto c2 = cycle({10,14,16,12});//edges
-    //strips
-    auto c3 = cycle({2,47,29,20});
-    auto c4 = cycle({5,50,32,23});
-    auto c5 = cycle({8,53,35,26});
+    auto c1 = cycle({9,11,17,15});
+    auto c2 = cycle({10,14,16,12});
+    auto c3 = cycle({20,2,51,29});
+    auto c4 = cycle({23,5,48,32});
+    auto c5 = cycle({26,8,45,35});
 
     p.insert(p.end(),c1.begin(),c1.end());
     p.insert(p.end(),c2.begin(),c2.end());
@@ -52,12 +50,11 @@ Perm moveR(){
 }
 Perm moveF(){
     Perm p;
-    auto c1 = cycle({18,20,26,24});//corners
-    auto c2 = cycle({19,23,25,21});//edges
-    //strips
-    auto c3 = cycle({6,9,27,38});
+    auto c1 = cycle({18,20,26,24});
+    auto c2 = cycle({19,23,25,21});
+    auto c3 = cycle({6,9,29,44});
     auto c4 = cycle({7,12,28,41});
-    auto c5 = cycle({8,15,29,44});
+    auto c5 = cycle({8,15,27,38});
 
     p.insert(p.end(),c1.begin(),c1.end());
     p.insert(p.end(),c2.begin(),c2.end());
@@ -69,9 +66,8 @@ Perm moveF(){
 }
 Perm moveD(){
     Perm p;
-    auto c1 = cycle({29,27,33,35});//corners
-    auto c2 = cycle({28,30,34,32});//edges
-    //strips
+    auto c1 = cycle({27,29,35,33});
+    auto c2 = cycle({28,32,34,30});
     auto c3 = cycle({24,15,51,42});
     auto c4 = cycle({25,16,52,43});
     auto c5 = cycle({26,17,53,44});
@@ -85,12 +81,11 @@ Perm moveD(){
 }
 Perm moveL(){
     Perm p;
-    auto c1 = cycle({38,36,42,44});//corners
-    auto c2 = cycle({37,39,43,41});//edges
-    //strips
-    auto c3 = cycle({18,27,45,0});
-    auto c4 = cycle({21,30,48,3});
-    auto c5 = cycle({24,33,51,6});
+    auto c1 = cycle({36,38,44,42});
+    auto c2 = cycle({37,41,43,39});
+    auto c3 = cycle({18,27,47,6});
+    auto c4 = cycle({21,30,50,3});
+    auto c5 = cycle({24,33,53,0});
 
     p.insert(p.end(),c1.begin(),c1.end());
     p.insert(p.end(),c2.begin(),c2.end());
@@ -102,12 +97,11 @@ Perm moveL(){
 }
 Perm moveB(){
     Perm p;
-    auto c1 = cycle({47,45,51,53});//corners
-    auto c2 = cycle({46,48,52,50});//edges
-    //strips
-    auto c3 = cycle({0,36,33,11});
+    auto c1 = cycle({45,47,53,51});
+    auto c2 = cycle({46,50,52,48});
+    auto c3 = cycle({0,42,35,17});
     auto c4 = cycle({1,39,34,14});
-    auto c5 = cycle({2,42,35,17});
+    auto c5 = cycle({2,36,33,11});
 
     p.insert(p.end(),c1.begin(),c1.end());
     p.insert(p.end(),c2.begin(),c2.end());

@@ -10,6 +10,7 @@ class Cube{
     Cube();
     void print();
     void print2D();
+    bool isSolved();
 };
 
 #endif

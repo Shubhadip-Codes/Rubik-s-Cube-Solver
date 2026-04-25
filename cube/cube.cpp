@@ -8,6 +8,7 @@ Cube::Cube(){
         "DDDDDDDDD"
         "LLLLLLLLL"
         "BBBBBBBBB";
+
 }
 void Cube::print(){
     cout<<"Cube State\n";
@@ -51,3 +52,14 @@ void Cube::print2D(){
         }
     }
 }
+bool Cube :: isSolved(){
+    return state == 
+        "UUUUUUUUU"
+        "RRRRRRRRR"
+        "FFFFFFFFF"
+        "DDDDDDDDD"
+        "LLLLLLLLL"
+        "BBBBBBBBB";
+}
+
+
