@@ -1,10 +1,9 @@
 #ifndef SCRAMBLE_H
 #define SCRAMBLE_H
 
-#include<bits/stdc++.h>
-using namespace std;
+#include <string>
 
-string randomScramble(int len = 20);
-string inverseScramble(string s);
+std::string randomScramble(int len = 20);
+std::string inverseScramble(std::string s);
 
 #endif

@@ -1,17 +1,18 @@
 #ifndef MOVES_H
 #define MOVES_H
 
-#include "cube/cube.h"
-#include<bits/stdc++.h>
-using namespace std;
+#include "../cube/cube.h"
 
-using Perm = vector<pair<int,int>>;
-void applyMove(Cube &c, const Perm &perm);
-Perm cycle(vector<int>v);
-Perm moveU();
-Perm moveR();
-Perm moveF();
-Perm moveD();
-Perm moveL();
-Perm moveB();
+
+enum Move {
+    U, Ui, U2,
+    D, Di, D2,
+    L, Li, L2,
+    R, Ri, R2,
+    F, Fi, F2,
+    B, Bi, B2
+};
+
+void applyMove(Cube &c, Move m);
+
 #endif

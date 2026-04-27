@@ -1,19 +1,26 @@
-#include "scramble.h"
+#include<bits/stdc++.h>
+using namespace std;
 
 string randomScramble(int len){
     vector<string> faces = {"U","R","F","D","L","B"};
     vector<string> suffix = {"","'","2"};
 
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> fdist(0,5);
+    uniform_int_distribution<> sdist(0,2);
+
     string res = "";
-    string last ="";
+    string last = "";
 
     for(int i=0;i<len;i++){
         string move;
         while(true){
-            string f = faces[rand() % 6];
-            string s = suffix[rand() % 3];
+            string f = faces[fdist(gen)];
+            string s = suffix[sdist(gen)];
             move = f + s;
-            if(last != "" && last[0] == move[0])continue;
+
+            if(last != "" && last[0] == move[0]) continue;
             break;
         }
         res += move + " ";
@@ -33,9 +40,15 @@ string inverseScramble(string s){
 
     string res = "";
     for(auto &x : moves){
-        if(x.size() == 1)res += x + "' ";
-        else if(x[1] == '\'')res += string(1,x[0]) + " ";
-        else if(x[1] == '2')res += x + " ";
+        if(x.size() == 1) {
+            res += x + "' ";
+        }
+        else if(x.size() == 2 && x[1] == '\'') {
+            res += string(1, x[0]) + " ";
+        }
+        else if(x.size() == 2 && x[1] == '2') {
+            res += x + " ";
+        }
     }
     return res;
 }

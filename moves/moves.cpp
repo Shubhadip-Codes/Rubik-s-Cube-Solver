@@ -1,113 +1,124 @@
 #include "moves.h"
 
-void applyMove(Cube &c, const Perm &perm){
-    string temp = c.state;
-    for(auto &p : perm){
-        c.state[p.second] = temp[p.first];
+inline void cycle4(int &a, int &b, int &c, int &d){
+    int temp = a;
+    a = d;
+    d = c;
+    c = b;
+    b = temp;
+}
+
+// Edge indices:
+// 0=UF, 1=UR, 2=UB, 3=UL
+// 4=DF, 5=DR, 6=DB, 7=DL
+// 8=FR, 9=FL, 10=BR, 11=BL
+
+void moveU(Cube &c){
+    cycle4(c.edgePos[0], c.edgePos[1], c.edgePos[2], c.edgePos[3]);
+    cycle4(c.edgeOri[0], c.edgeOri[1], c.edgeOri[2], c.edgeOri[3]);
+    cycle4(c.cornerPos[0], c.cornerPos[1], c.cornerPos[2], c.cornerPos[3]);
+    cycle4(c.cornerOri[0], c.cornerOri[1], c.cornerOri[2], c.cornerOri[3]);
+    // U corners have no orientation change
+}
+
+void moveD(Cube &c){
+    cycle4(c.edgePos[4], c.edgePos[5], c.edgePos[6], c.edgePos[7]);
+    cycle4(c.edgeOri[4], c.edgeOri[5], c.edgeOri[6], c.edgeOri[7]);
+    cycle4(c.cornerPos[4], c.cornerPos[5], c.cornerPos[6], c.cornerPos[7]);
+    cycle4(c.cornerOri[4], c.cornerOri[5], c.cornerOri[6], c.cornerOri[7]);
+    // D corners have no orientation change
+}
+
+void moveR(Cube &c){
+    // Edges: UR(1), FR(8), DR(5), BR(10)
+    cycle4(c.edgePos[1], c.edgePos[8], c.edgePos[5], c.edgePos[10]);
+    cycle4(c.edgeOri[1], c.edgeOri[8], c.edgeOri[5], c.edgeOri[10]);
+    // R edges have no orientation change
+
+    // Corners: UFR(0), DFR(4), DRB(5), URB(1)
+    cycle4(c.cornerPos[0], c.cornerPos[4], c.cornerPos[5], c.cornerPos[1]);
+    cycle4(c.cornerOri[0], c.cornerOri[4], c.cornerOri[5], c.cornerOri[1]);
+    c.cornerOri[0] = (c.cornerOri[0] + 2) % 3;
+    c.cornerOri[4] = (c.cornerOri[4] + 1) % 3;
+    c.cornerOri[5] = (c.cornerOri[5] + 2) % 3;
+    c.cornerOri[1] = (c.cornerOri[1] + 1) % 3;
+}
+
+void moveL(Cube &c){
+    // Edges: UL(3), BL(11), DL(7), FL(9)
+    cycle4(c.edgePos[3], c.edgePos[11], c.edgePos[7], c.edgePos[9]);
+    cycle4(c.edgeOri[3], c.edgeOri[11], c.edgeOri[7], c.edgeOri[9]);
+    // L edges have no orientation change
+
+    // Corners: UBL(2), DBL(6), DLF(7), ULF(3)
+    cycle4(c.cornerPos[2], c.cornerPos[6], c.cornerPos[7], c.cornerPos[3]);
+    cycle4(c.cornerOri[2], c.cornerOri[6], c.cornerOri[7], c.cornerOri[3]);
+    c.cornerOri[2] = (c.cornerOri[2] + 2) % 3;
+    c.cornerOri[6] = (c.cornerOri[6] + 1) % 3;
+    c.cornerOri[7] = (c.cornerOri[7] + 2) % 3;
+    c.cornerOri[3] = (c.cornerOri[3] + 1) % 3;
+}
+
+void moveF(Cube &c){
+    // Edges: UF(0), FR(8), DF(4), FL(9) — all flip orientation
+    cycle4(c.edgePos[0], c.edgePos[8], c.edgePos[4], c.edgePos[9]);
+    cycle4(c.edgeOri[0], c.edgeOri[8], c.edgeOri[4], c.edgeOri[9]);
+    c.edgeOri[0] ^= 1;
+    c.edgeOri[8] ^= 1;
+    c.edgeOri[4] ^= 1;
+    c.edgeOri[9] ^= 1;
+
+    // Corners: UFR(0), ULF(3), DLF(7), DFR(4)
+    cycle4(c.cornerPos[0], c.cornerPos[3], c.cornerPos[7], c.cornerPos[4]);
+    cycle4(c.cornerOri[0], c.cornerOri[3], c.cornerOri[7], c.cornerOri[4]);
+    c.cornerOri[0] = (c.cornerOri[0] + 1) % 3;
+    c.cornerOri[3] = (c.cornerOri[3] + 2) % 3;
+    c.cornerOri[7] = (c.cornerOri[7] + 1) % 3;
+    c.cornerOri[4] = (c.cornerOri[4] + 2) % 3;
+}
+
+void moveB(Cube &c){
+    // Edges: UB(2), BL(11), DB(6), BR(10) — all flip orientation
+    cycle4(c.edgePos[2], c.edgePos[11], c.edgePos[6], c.edgePos[10]);
+    cycle4(c.edgeOri[2], c.edgeOri[11], c.edgeOri[6], c.edgeOri[10]);
+    c.edgeOri[2]  ^= 1;
+    c.edgeOri[11] ^= 1;
+    c.edgeOri[6]  ^= 1;
+    c.edgeOri[10] ^= 1;
+
+    // Corners: URB(1), DRB(5), DBL(6), UBL(2)
+    cycle4(c.cornerPos[1], c.cornerPos[5], c.cornerPos[6], c.cornerPos[2]);
+    cycle4(c.cornerOri[1], c.cornerOri[5], c.cornerOri[6], c.cornerOri[2]);
+    c.cornerOri[1] = (c.cornerOri[1] + 1) % 3;
+    c.cornerOri[5] = (c.cornerOri[5] + 2) % 3;
+    c.cornerOri[6] = (c.cornerOri[6] + 1) % 3;
+    c.cornerOri[2] = (c.cornerOri[2] + 2) % 3;
+}
+
+void applyMove(Cube &c, Move m){
+    switch(m) {
+        case U:  moveU(c); break;
+        case Ui: moveU(c); moveU(c); moveU(c); break;
+        case U2: moveU(c); moveU(c); break;
+
+        case D:  moveD(c); break;
+        case Di: moveD(c); moveD(c); moveD(c); break;
+        case D2: moveD(c); moveD(c); break;
+
+        case R:  moveR(c); break;
+        case Ri: moveR(c); moveR(c); moveR(c); break;
+        case R2: moveR(c); moveR(c); break;
+
+        case L:  moveL(c); break;
+        case Li: moveL(c); moveL(c); moveL(c); break;
+        case L2: moveL(c); moveL(c); break;
+
+        case F:  moveF(c); break;
+        case Fi: moveF(c); moveF(c); moveF(c); break;
+        case F2: moveF(c); moveF(c); break;
+
+        case B:  moveB(c); break;
+        case Bi: moveB(c); moveB(c); moveB(c); break;
+        case B2: moveB(c); moveB(c); break;
     }
-}
-
-Perm cycle(vector<int>v){
-    Perm p;
-    int n = v.size();
-    for(int i=0;i<n;i++){
-        p.push_back({v[i],v[(i+1)%n]});
-    }
-    return p;
-}
-
-Perm moveU(){
-    Perm p;
-    auto c1 = cycle({0, 2, 8, 6});
-    auto c2 = cycle({1, 5, 7, 3});
-    auto c3 = cycle({18,36,45,9});
-    auto c4 = cycle({19,37,46,10});
-    auto c5 = cycle({20,38,47,11});
-
-    p.insert(p.end(),c1.begin(),c1.end());
-    p.insert(p.end(),c2.begin(),c2.end());
-    p.insert(p.end(),c3.begin(),c3.end());
-    p.insert(p.end(),c4.begin(),c4.end());
-    p.insert(p.end(),c5.begin(),c5.end());
-
-    return p;
-}
-
-Perm moveR(){
-    Perm p;
-    auto c1 = cycle({9,11,17,15});
-    auto c2 = cycle({10,14,16,12});
-    auto c3 = cycle({20,2,51,29});
-    auto c4 = cycle({23,5,48,32});
-    auto c5 = cycle({26,8,45,35});
-
-    p.insert(p.end(),c1.begin(),c1.end());
-    p.insert(p.end(),c2.begin(),c2.end());
-    p.insert(p.end(),c3.begin(),c3.end());
-    p.insert(p.end(),c4.begin(),c4.end());
-    p.insert(p.end(),c5.begin(),c5.end());
-    return p;
-}
-Perm moveF(){
-    Perm p;
-    auto c1 = cycle({18,20,26,24});
-    auto c2 = cycle({19,23,25,21});
-    auto c3 = cycle({6,9,29,44});
-    auto c4 = cycle({7,12,28,41});
-    auto c5 = cycle({8,15,27,38});
-
-    p.insert(p.end(),c1.begin(),c1.end());
-    p.insert(p.end(),c2.begin(),c2.end());
-    p.insert(p.end(),c3.begin(),c3.end());
-    p.insert(p.end(),c4.begin(),c4.end());
-    p.insert(p.end(),c5.begin(),c5.end());
-
-    return p;
-}
-Perm moveD(){
-    Perm p;
-    auto c1 = cycle({27,29,35,33});
-    auto c2 = cycle({28,32,34,30});
-    auto c3 = cycle({24,15,51,42});
-    auto c4 = cycle({25,16,52,43});
-    auto c5 = cycle({26,17,53,44});
-    p.insert(p.end(),c1.begin(),c1.end());
-    p.insert(p.end(),c2.begin(),c2.end());
-    p.insert(p.end(),c3.begin(),c3.end());
-    p.insert(p.end(),c4.begin(),c4.end());
-    p.insert(p.end(),c5.begin(),c5.end());
-
-    return p;
-}
-Perm moveL(){
-    Perm p;
-    auto c1 = cycle({36,38,44,42});
-    auto c2 = cycle({37,41,43,39});
-    auto c3 = cycle({18,27,47,6});
-    auto c4 = cycle({21,30,50,3});
-    auto c5 = cycle({24,33,53,0});
-
-    p.insert(p.end(),c1.begin(),c1.end());
-    p.insert(p.end(),c2.begin(),c2.end());
-    p.insert(p.end(),c3.begin(),c3.end());
-    p.insert(p.end(),c4.begin(),c4.end());
-    p.insert(p.end(),c5.begin(),c5.end());
-
-    return p;
-}
-Perm moveB(){
-    Perm p;
-    auto c1 = cycle({45,47,53,51});
-    auto c2 = cycle({46,50,52,48});
-    auto c3 = cycle({0,42,35,17});
-    auto c4 = cycle({1,39,34,14});
-    auto c5 = cycle({2,36,33,11});
-
-    p.insert(p.end(),c1.begin(),c1.end());
-    p.insert(p.end(),c2.begin(),c2.end());
-    p.insert(p.end(),c3.begin(),c3.end());
-    p.insert(p.end(),c4.begin(),c4.end());
-    p.insert(p.end(),c5.begin(),c5.end());
-
-    return p;
 }
